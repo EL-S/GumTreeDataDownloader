@@ -20,7 +20,7 @@ import urllib.parse
 #max size = 2147483647
 
 def collect_data(i,json_url,first=False):
-    global products,pages
+    global products,pages,dont_include
     print("Page:",i,json_url)
     response = requests.get(json_url)
     json_data = response.text
@@ -34,16 +34,25 @@ def collect_data(i,json_url,first=False):
         price = result['priceText'].replace(",","").replace("$","")
         url = "https://www.gumtree.com.au/s-ad/"+str(result['id']).replace(",","")
         data = [price,title,url]
+        append_flag = False
         if data not in products:
             #print("New")
-            if dont_include not in data[1]: #if the don't include term isn't in the title
-                products.append(data)
+            for term in dont_include:
+                if term.lower() not in data[1].lower(): #if the don't include term isn't in the title
+                    append_flag = True
+                else:
+                    append_flag = False
+                    break #found a term so stop the rest
         else:
             pass
-            #print("Old")
+        if append_flag == True:
+            products.append(data)
+        else:
+            pass
+            #print("Old or includes bad term(s)")
 
 search_term = "hdd"
-dont_include = "cable"
+dont_include = ["cable","Caddy","case","Accessories","player","Faulty","broken","mb","Rack","mobile","Enclosure","cassettes","dvd"]
 
 pages = 0
 search_term_safe = urllib.parse.quote(search_term)

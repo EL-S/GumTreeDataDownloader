@@ -38,7 +38,6 @@ def generate_json_urls():
         for extra_api_term in extra_api_terms:
             for i in range(1,pages+1): #most recent,most expensive items,best match
                 json_urls.append("https://www.gumtree.com.au/ws/search.json?keywords="+search_term_safe+"&pageNum="+str(i)+"&pageSize=2147483647&previousCategoryId=&radius=0"+extra_api_term)
-    print(json_urls)
 def collect_data(json_data,first=False):
     global products,pages,dont_include
     if first:

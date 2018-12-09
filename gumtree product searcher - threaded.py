@@ -38,7 +38,7 @@ def generate_json_urls():
         for extra_api_term in extra_api_terms:
             for i in range(1,pages+1): #most recent,most expensive items,best match
                 json_urls.append("https://www.gumtree.com.au/ws/search.json?keywords="+search_term_safe+"&pageNum="+str(i)+"&pageSize=2147483647&previousCategoryId=&radius=0"+extra_api_term)
-
+    print(json_urls)
 def collect_data(json_data,first=False):
     global products,pages,dont_include
     if first:
@@ -48,13 +48,14 @@ def collect_data(json_data,first=False):
     for result in resultlist:
         title = " ".join(result['title'].split()).replace(",","")
         price = result['priceText'].replace(",","").replace("$","")
+        desc = " ".join(result['description'].split()).replace(",","")
         url = "https://www.gumtree.com.au/s-ad/"+str(result['id']).replace(",","")
-        data = [price,title,url]
+        data = [price,title,url,desc]
         append_flag = False
         if data not in products:
             #print("New")
             for term in dont_include:
-                if term.lower() not in data[1].lower(): #if the don't include term isn't in the title
+                if (term.lower() not in data[1].lower()) or (term == ""): #if the don't include term isn't in the title
                     append_flag = True
                 else:
                     append_flag = False
@@ -105,9 +106,10 @@ def handle_json_response(response):
             ioloop.IOLoop.instance().stop()
             print("Downloaded",len(products),"products")
 
-search_term = "hdd"
-dont_include = ["cable","Caddy","case","Accessories","player","Faulty","broken","mb","Rack","mobile","Enclosure","cassettes","dvd"]
-threads = 100
+search_term = input("Search Term: ")
+dont_include = input("Don't Include Terms (comma seperated): ").split(",")
+
+threads = 100 #configurable
 
 pages = 0
 json_urls = []

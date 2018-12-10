@@ -26,7 +26,7 @@ def get_page_amount():
     response = requests.get(json_url)
     json_data = response.text
     collect_data(json_data,True)
-    print("Pages:",pages)
+    print("Pages to download:",pages)
     
 def generate_json_urls():
     global json_urls,pages,search_term_safe

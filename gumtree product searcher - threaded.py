@@ -85,7 +85,7 @@ def download_pages():
         http_client.fetch(request,handle_json_response)
         i += 1
     total = i
-    print("Starting Download...")
+    print("Starting Download Of Pages...")
     ioloop.IOLoop.instance().start()
 
 def handle_json_response(response):

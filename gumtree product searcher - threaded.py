@@ -21,13 +21,15 @@ from tornado import ioloop, httpclient
 #max size = 2147483647
 
 def get_page_amount():
-    global json_urls,search_term_safe
+    global json_urls,search_term_safe,pages
     json_url = "https://www.gumtree.com.au/ws/search.json?keywords="+search_term_safe+"&pageNum=1&pageSize=2147483647&previousCategoryId=&radius=0&sortByName=price_asc"
     response = requests.get(json_url)
     json_data = response.text
     collect_data(json_data,True)
-    print("Pages to download:",pages)
-    
+    if pages == 13:
+        pages = 4*pages
+    print("Pages to Download:",pages)
+
 def generate_json_urls():
     global json_urls,pages,search_term_safe
     if pages > 1:
@@ -77,7 +79,6 @@ def save_csv():
 
 def download_pages():
     global i,json_urls,total,http_client
-    print(len(json_urls))
     i = 0
     http_client = httpclient.AsyncHTTPClient(force_instance=True,max_clients=threads)
     for json_url in json_urls:
